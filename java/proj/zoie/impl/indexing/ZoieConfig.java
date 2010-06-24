@@ -8,7 +8,8 @@ import org.apache.lucene.util.Version;
 
 import proj.zoie.api.DocIDMapperFactory;
 import proj.zoie.api.impl.DefaultDocIDMapperFactory;
-
+import proj.zoie.api.ZoieVersionFactory;
+import proj.zoie.api.impl.DefaultZoieVersionFactory;
 /**
  * Configuration parameters for building a ZoieSystem.
  */
@@ -35,6 +36,7 @@ public class ZoieConfig
   public static final int DEFAULT_MAX_BATCH_SIZE = 10000;
 
   DocIDMapperFactory docidMapperFactory = null;
+  ZoieVersionFactory zoieVersionFactory = null;
   Analyzer analyzer = null;
   Similarity similarity = null;
   int batchSize;
@@ -63,6 +65,16 @@ public class ZoieConfig
   public void setDocidMapperFactory(DocIDMapperFactory docidMapperFactory)
   {
     this.docidMapperFactory = docidMapperFactory;
+  }
+  
+  public ZoieVersionFactory getZoieVersionFactory()
+  {
+    return zoieVersionFactory == null ? new DefaultZoieVersionFactory() : zoieVersionFactory;
+  }
+
+  public void setZoieVersionFactory(ZoieVersionFactory zoieVersionFactory)
+  {
+    this.zoieVersionFactory = zoieVersionFactory;
   }
 
   public Analyzer getAnalyzer()

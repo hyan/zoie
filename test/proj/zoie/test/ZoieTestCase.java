@@ -9,12 +9,16 @@ import org.apache.lucene.index.IndexReader;
 
 import proj.zoie.api.DocIDMapperFactory;
 import proj.zoie.api.ZoieIndexReader;
+import proj.zoie.api.DefaultZoieVersion;
 import proj.zoie.api.impl.InRangeDocIDMapperFactory;
 import proj.zoie.api.indexing.IndexReaderDecorator;
 import proj.zoie.impl.indexing.ZoieSystem;
 import proj.zoie.test.data.TestDataInterpreter;
 import proj.zoie.test.data.TestInRangeDataInterpreter;
 import junit.framework.TestCase;
+
+import proj.zoie.api.ZoieVersionFactory;
+
 
 public class ZoieTestCase extends TestCase
 {
@@ -42,33 +46,33 @@ public class ZoieTestCase extends TestCase
   @Override
   public void tearDown()
   {
-    deleteDirectory(getIdxDir());
+    //deleteDirectory(getIdxDir());
   }
   protected static File getIdxDir()
   {
     File tmpDir=new File(System.getProperty("java.io.tmpdir"));
     File tempFile = new File(tmpDir, "test-idx");
     int i = 0;
-    while (tempFile.exists())
-    {
-      if (i>10)
-      {
-        System.out.println("cannot delete");
-        log.info("cannot delete");
-        return tempFile;
-      }
-      System.out.println("deleting " + tempFile);
-      log.info("deleting " + tempFile);
-      tempFile.delete();
-      try
-      {
-        Thread.sleep(50);
-      } catch(Exception e)
-      {
-        log.error("thread interrupted in sleep in deleting file" + e);
-      }
-      i++;
-    }
+//    while (tempFile.exists())
+//    {
+//      if (i>10)
+//      {
+//        System.out.println("cannot delete");
+//        log.info("cannot delete");
+//        return tempFile;
+//      }
+//      System.out.println("deleting " + tempFile);
+//      log.info("deleting " + tempFile);
+//      tempFile.delete();
+//      try
+//      {
+//        Thread.sleep(50);
+//      } catch(Exception e)
+//      {
+//        log.error("thread interrupted in sleep in deleting file" + e);
+//      }
+//      i++;
+//    }
     return tempFile;
   }
 
@@ -77,19 +81,26 @@ public class ZoieTestCase extends TestCase
     return new File(System.getProperty("java.io.tmpdir"));
   }
 
-  protected static ZoieSystem<IndexReader,String> createZoie(File idxDir,boolean realtime)
+  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime)
   {
     return createZoie(idxDir, realtime, 20);
   }
-
-  protected static ZoieSystem<IndexReader,String> createZoie(File idxDir,boolean realtime,DocIDMapperFactory docidMapperFactory)
+  
+  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime, long delay)
   {
-    return createZoie(idxDir, realtime, 20,null,docidMapperFactory);
+    return createZoie(idxDir,realtime,delay,null,null,null);
   }
 
-  protected static ZoieSystem<IndexReader,String> createZoie(File idxDir,boolean realtime, long delay)
+  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime,DocIDMapperFactory docidMapperFactory,ZoieVersionFactory<DefaultZoieVersion> zoieVersionFactory)
   {
-    return createZoie(idxDir,realtime,delay,null,null);
+    return createZoie(idxDir, realtime, 20,null,docidMapperFactory, zoieVersionFactory);
+  }
+
+  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime, long delay,Analyzer analyzer,DocIDMapperFactory docidMapperFactory, ZoieVersionFactory<DefaultZoieVersion> zoieVersionFactory)
+  {
+    ZoieSystem<IndexReader,String,DefaultZoieVersion> idxSystem=new ZoieSystem<IndexReader, String, DefaultZoieVersion>(idxDir,new TestDataInterpreter(delay,analyzer),
+        new TestIndexReaderDecorator(),docidMapperFactory,zoieVersionFactory, null,null,50,100,realtime);
+    return idxSystem;
   }
 
 
@@ -101,19 +112,12 @@ public class ZoieTestCase extends TestCase
     public IndexReader redecorate(IndexReader decorated,ZoieIndexReader<IndexReader> copy,boolean withDeletes) throws IOException {
       return decorated;
     }
-  }
+  }  
 
-  protected static ZoieSystem<IndexReader,String> createZoie(File idxDir,boolean realtime, long delay,Analyzer analyzer,DocIDMapperFactory docidMapperFactory)
+  protected static ZoieSystem<IndexReader,String,DefaultZoieVersion> createInRangeZoie(File idxDir,boolean realtime, InRangeDocIDMapperFactory docidMapperFactory, ZoieVersionFactory<DefaultZoieVersion> zoieVersionFactory)
   {
-    ZoieSystem<IndexReader,String> idxSystem=new ZoieSystem<IndexReader, String>(idxDir,new TestDataInterpreter(delay,analyzer),
-        new TestIndexReaderDecorator(),docidMapperFactory,null,null,50,100,realtime);
-    return idxSystem;
-  }
-
-  protected static ZoieSystem<IndexReader,String> createInRangeZoie(File idxDir,boolean realtime, InRangeDocIDMapperFactory docidMapperFactory)
-  {
-    ZoieSystem<IndexReader,String> idxSystem=new ZoieSystem<IndexReader, String>(idxDir,new TestInRangeDataInterpreter(20,null),
-        new TestIndexReaderDecorator(),docidMapperFactory,null,null,50,100,realtime);
+    ZoieSystem<IndexReader,String,DefaultZoieVersion> idxSystem=new ZoieSystem<IndexReader, String,DefaultZoieVersion>(idxDir,new TestInRangeDataInterpreter(20,null),
+        new TestIndexReaderDecorator(),docidMapperFactory,zoieVersionFactory,null,null,50,100,realtime);
     return idxSystem;
   } 
   protected static boolean deleteDirectory(File path) {

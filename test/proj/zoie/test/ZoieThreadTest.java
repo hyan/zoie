@@ -24,6 +24,7 @@ import org.apache.lucene.util.Version;
 import proj.zoie.api.ZoieException;
 import proj.zoie.api.ZoieExecutors;
 import proj.zoie.api.ZoieIndexReader;
+import proj.zoie.api.DefaultZoieVersion;
 import proj.zoie.api.DataConsumer.DataEvent;
 import proj.zoie.impl.indexing.MemoryStreamDataProvider;
 import proj.zoie.impl.indexing.ZoieSystem;
@@ -48,7 +49,7 @@ public class ZoieThreadTest extends ZoieTestCase
   public void testThreadDelImpl() throws ZoieException
   {
     File idxDir = getIdxDir();
-    final ZoieSystem<IndexReader,String> idxSystem = createZoie(idxDir,true, 100);
+    final ZoieSystem<IndexReader,String, DefaultZoieVersion> idxSystem = createZoie(idxDir,true, 100);
     idxSystem.start();
     final String query = "zoie";
     int numThreads = 5;
@@ -184,7 +185,7 @@ public class ZoieThreadTest extends ZoieTestCase
       };
     }
 
-    MemoryStreamDataProvider<String> memoryProvider=new MemoryStreamDataProvider<String>();
+    MemoryStreamDataProvider<String, DefaultZoieVersion> memoryProvider=new MemoryStreamDataProvider<String, DefaultZoieVersion>();
     memoryProvider.setDataConsumer(idxSystem);
     memoryProvider.start();
     ExecutorService threadPool = ZoieExecutors.newCachedThreadPool();
@@ -193,13 +194,19 @@ public class ZoieThreadTest extends ZoieTestCase
       idxSystem.setBatchSize(10);
 
       final int count = TestData.testdata.length;
-      List<DataEvent<String>> list = new ArrayList<DataEvent<String>>(count);
+      DefaultZoieVersion zvt = null;
+      List<DataEvent<String, DefaultZoieVersion>> list = new ArrayList<DataEvent<String, DefaultZoieVersion>>(count);
       for (int i = 0; i < count; i++)
       {
-        list.add(new DataEvent<String>(i, TestData.testdata[i]));
+        //list.add(new DataEvent<String>(i, TestData.testdata[i]));
+        zvt = new DefaultZoieVersion();
+        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        zvt.setVersionId(i);
+        list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
       }
       memoryProvider.addEvents(list);
-      idxSystem.syncWthVersion(100000, count - 1);
+      //idxSystem.syncWthVersion(100000, count - 1);
+      idxSystem.syncWthVersion(100000, zvt);
       Future[] futures = new Future<?>[queryRunnables.length];
       for(int x = 0 ; x< queryRunnables.length; x++)
       {
@@ -210,11 +217,21 @@ public class ZoieThreadTest extends ZoieTestCase
       {
         for (int i = 0; i < count; i++)
         {
+          //long version = n * count + i;
+          //list = new ArrayList<DataEvent<String>>(1);
+          //list.add(new DataEvent<String>(version, TestData.testdata[i]));
+          
+          zvt = new DefaultZoieVersion();
           long version = n * count + i;
-          list = new ArrayList<DataEvent<String>>(1);
-          list.add(new DataEvent<String>(version, TestData.testdata[i]));
+          zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
+          zvt.setVersionId(version);
+          
+          list = new ArrayList<DataEvent<String,DefaultZoieVersion>>(1);
+          list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i], zvt));
+          
           memoryProvider.addEvents(list);
-          idxSystem.syncWthVersion(100000, version);
+          //idxSystem.syncWthVersion(100000, version);
+          idxSystem.syncWthVersion(100000, zvt);
         }
         boolean stopNow = false;
         for(QueryRunnable queryThread : queryRunnables) stopNow |= queryThread.stop;

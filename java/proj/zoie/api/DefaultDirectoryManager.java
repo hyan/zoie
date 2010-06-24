@@ -19,16 +19,20 @@ import proj.zoie.api.impl.util.ChannelUtil;
 import proj.zoie.api.impl.util.FileUtil;
 import proj.zoie.impl.indexing.internal.IndexSignature;
 
-public class DefaultDirectoryManager implements DirectoryManager
+import proj.zoie.api.ZoieVersion;
+import proj.zoie.api.impl.DefaultZoieVersionFactory;
+
+public class DefaultDirectoryManager<V extends ZoieVersion> implements DirectoryManager<V>
 {
   public static final Logger log = Logger.getLogger(DefaultDirectoryManager.class);
-
+  
   private File _location;
+  private static DefaultZoieVersionFactory _zoieVersionFactory = new DefaultZoieVersionFactory();
   
   public DefaultDirectoryManager(File location)
   {
     if (location==null) throw new IllegalArgumentException("null index directory.");
-
+    //_zoieVersionFactory = zoieVersionFactory;
     _location = location;
   }
   
@@ -57,7 +61,7 @@ public class DefaultDirectoryManager implements DirectoryManager
     
     if(create)
     {
-      IndexSignature sig = null;
+      IndexSignature<V> sig = null;
       if (_location.exists())
       {
         sig = getCurrentIndexSignature();
@@ -66,9 +70,11 @@ public class DefaultDirectoryManager implements DirectoryManager
       if (sig == null)
       {
         File directoryFile = new File(_location, INDEX_DIRECTORY);
-        sig = new IndexSignature(0L);
+        sig = new IndexSignature<V>(null);
+        //sig.setZoieVersionFactory(_zoieVersionFactory);
         try
         {
+          //System.out.println("DefaultDirectoryManager:getDirectory():sig: " + sig);
           saveSignature(sig, directoryFile);
         }
         catch (IOException e)
@@ -89,7 +95,8 @@ public class DefaultDirectoryManager implements DirectoryManager
       try
       {
         fin = new FileInputStream(file);
-        return IndexSignature.read(fin);
+       // IndexSignature.setZoieVersionFactory(DefaultZoieVersionFactory.getInstance());
+        return IndexSignature.read(fin, _zoieVersionFactory);
       }
       catch (IOException ioe)
       {
@@ -122,6 +129,7 @@ public class DefaultDirectoryManager implements DirectoryManager
   {
     if (!file.exists())
     {
+      //System.out.println("DefaultDirectoryManager:saveSignature:createNewFile");
       file.createNewFile();
     }
     FileOutputStream fout = null;
@@ -157,14 +165,24 @@ public class DefaultDirectoryManager implements DirectoryManager
     IndexSignature sig = readSignature(directoryFile);
     return sig;
   }
-
-  public long getVersion() throws IOException
+  
+ // public ZoieVersionFactory<V> getVersionFactory()
+  //{
+   // return _zoieVersionFactory;
+ // }
+  
+  //public void setVersionFactory(ZoieVersionFactory<V> zoieVersionFactory)
+  //{
+    //_zoieVersionFactory = zoieVersionFactory;
+ // }
+  
+  public V getVersion() throws IOException
   {
-    IndexSignature sig = getCurrentIndexSignature();
-    return sig == null ? 0L : sig.getVersion();
+    IndexSignature<V> sig = getCurrentIndexSignature();
+    return sig == null ? null : sig.getVersion();
   }
   
-  public void setVersion(long version) throws IOException
+  public void setVersion(V version) throws IOException
   {
     // update new index file
     File directoryFile = new File(_location, INDEX_DIRECTORY);

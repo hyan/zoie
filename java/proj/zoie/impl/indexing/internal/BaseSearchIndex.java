@@ -23,6 +23,8 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -34,19 +36,20 @@ import org.apache.lucene.search.Similarity;
 import org.apache.lucene.store.Directory;
 
 import proj.zoie.api.DocIDMapper;
+import proj.zoie.api.ZoieVersion;
 import proj.zoie.api.ZoieIndexReader;
 import proj.zoie.api.indexing.ZoieIndexable.IndexingReq;
 
-public abstract class BaseSearchIndex<R extends IndexReader> {
+public abstract class BaseSearchIndex<R extends IndexReader, V extends ZoieVersion> {
 	  private static final Logger log = Logger.getLogger(BaseSearchIndex.class);
 	  
 	  private int _eventsHandled=0;
 	  protected MergeScheduler _mergeScheduler;
 	  protected IndexWriter _indexWriter = null;
 	  protected volatile LongOpenHashSet _delDocs = new LongOpenHashSet();
-	  protected final SearchIndexManager<R> _idxMgr;
+	  protected final SearchIndexManager<R,V> _idxMgr;
 	  
-	  protected BaseSearchIndex(SearchIndexManager<R> idxMgr){
+	  protected BaseSearchIndex(SearchIndexManager<R,V> idxMgr){
 		  _idxMgr = idxMgr;
 	  }
 	  
@@ -54,7 +57,7 @@ public abstract class BaseSearchIndex<R extends IndexReader> {
 	   * gets index version, e.g. SCN
 	   * @return index version
 	   */
-	  abstract public long getVersion();
+	  abstract V getVersion();
 	  
 	  /**
 	   * gets number of docs in the index, .e.g maxdoc - number of deleted docs
@@ -67,7 +70,7 @@ public abstract class BaseSearchIndex<R extends IndexReader> {
 	   * @param version
 	   * @throws IOException
 	   */
-	  abstract public void setVersion(long version)
+	  abstract public void setVersion(V version)
 	      throws IOException;
 	  
 	  /**
@@ -113,6 +116,10 @@ public abstract class BaseSearchIndex<R extends IndexReader> {
 	      if (idxMod!=null)
 	      {
 	        idxMod.commit();
+	        //Map<String, String> testCommitMap = new HashMap<String, String>();
+	        //testCommitMap.put("ZoieVersion ", getVersion().toString());
+	        //idxMod.commit(testCommitMap);
+	        //System.out.println(testCommitMap);
 	      }
 	    }
 	  }
@@ -150,7 +157,7 @@ public abstract class BaseSearchIndex<R extends IndexReader> {
 	  
 	  private void deleteDocs(LongSet delDocs) throws IOException
 	  {
-		int[] delArray=null;
+		  int[] delArray=null;
 	    if (delDocs!=null && delDocs.size() > 0)
 	    {
 	      ZoieIndexReader<R> reader= openIndexReader();
@@ -169,7 +176,7 @@ public abstract class BaseSearchIndex<R extends IndexReader> {
 		    		}
 	    		}
 	    	}
-	        delArray = delList.toIntArray();
+	      delArray = delList.toIntArray();
 	      }
 	    }
 	      
@@ -205,16 +212,16 @@ public abstract class BaseSearchIndex<R extends IndexReader> {
 	    }
 	  }
 	  
-	  public void loadFromIndex(BaseSearchIndex<R> index) throws IOException
+	  public void loadFromIndex(BaseSearchIndex<R,V> index) throws IOException
 	  {
 	    ZoieIndexReader<R> reader = index.openIndexReader();
 	    if(reader == null) return;
 	    
 	    Directory dir = reader.directory();
 	    
-        LongSet delDocs = _delDocs;
-        clearDeletes();
-        deleteDocs(delDocs);
+      LongSet delDocs = _delDocs;
+      clearDeletes();
+      deleteDocs(delDocs);
 	    
 	    IndexWriter writer = null;
 	    try
