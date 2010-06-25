@@ -7,12 +7,14 @@ import org.apache.log4j.Logger;
 import proj.zoie.api.DataConsumer;
 import proj.zoie.api.ZoieException;
 
-public class MockDataLoader<V> implements DataConsumer<V> {
+import proj.zoie.api.ZoieVersion;
+
+public class MockDataLoader<D, V extends ZoieVersion> implements DataConsumer<D, V> {
 	private static final Logger log = Logger.getLogger(MockDataLoader.class);
 	
 	private long _delay;
 	private int _count;
-	private V _lastConsumed;
+	private D _lastConsumed;
 	private int _numCalls = 0;
 	private int _numEvents = 0;
 	private volatile int _maxBatch = 0;
@@ -24,7 +26,7 @@ public class MockDataLoader<V> implements DataConsumer<V> {
 		_lastConsumed=null;
 	}
 	
-	public V getLastConsumed()
+	public D getLastConsumed()
 	{
 		return _lastConsumed;
 	}
@@ -44,7 +46,7 @@ public class MockDataLoader<V> implements DataConsumer<V> {
 		return _count;
 	}
 	
-	public void consume(Collection<DataEvent<V>> data) throws ZoieException
+	public void consume(Collection<DataEvent<D,V>> data) throws ZoieException
 	{	
 	    _numCalls++;
 	    if(data != null)
@@ -55,7 +57,7 @@ public class MockDataLoader<V> implements DataConsumer<V> {
 	    
 		if (data!=null && data.size()>0)
 		{
-			for (DataEvent<V> event : data)
+			for (DataEvent<D,V> event : data)
 			{
 				_lastConsumed=event.getData();
 			}
@@ -63,7 +65,8 @@ public class MockDataLoader<V> implements DataConsumer<V> {
 		}
 		try
 		{
-          Thread.sleep(_delay);
+		      Thread.sleep(_delay);
+        
         }
 		catch (InterruptedException e)
         {
@@ -85,7 +88,7 @@ public class MockDataLoader<V> implements DataConsumer<V> {
       return _maxBatch;
     }
     
-  public long getVersion()
+  public V getVersion()
   {
     throw new UnsupportedOperationException();
   }
