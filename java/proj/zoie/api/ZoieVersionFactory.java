@@ -2,7 +2,5 @@ package proj.zoie.api;
 
 public interface ZoieVersionFactory<V extends ZoieVersion>
 {
-  V getZoieVersion(String str);  
- // V getMinZoieVersion();
-  //V nextZoieVersion();
+  V getZoieVersion(String str);   
 }

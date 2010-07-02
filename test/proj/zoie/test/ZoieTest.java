@@ -1046,25 +1046,19 @@ public class ZoieTest extends ZoieTestCase
     try
     {
       List<DataEvent<String,DefaultZoieVersion>> list;
-      long version;
+      DefaultZoieVersion version;
       DefaultZoieVersion zvt = null;
 
       list=new ArrayList<DataEvent<String,DefaultZoieVersion>>(TestData.testdata.length);
       for (int i=0;i<TestData.testdata.length;++i)
       {
-        zvt = new DefaultZoieVersion();
-        //zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+i);
+        zvt = new DefaultZoieVersion();        
         zvt.setVersionId(i);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
       }
       idxSystem.consume(list);
       idxSystem.flushEvents(100000);
-      
-      //zvt = new DefaultZoieVersion();
-      //zvt.setVersionDesp("desp"+ dirMgr.getVersion().encodeToString());
-      //version = dirMgr.getVersion();
-      
-      //assertEquals("index version mismatch after first flush", TestData.testdata.length - 1, version);
+          
       assertEquals("index version mismatch after first flush", TestData.testdata.length - 1, zvt.getVersionId());
       
       //long versionExported = version;
@@ -1093,12 +1087,9 @@ public class ZoieTest extends ZoieTestCase
       }
       idxSystem.consume(list);
       idxSystem.flushEvents(100000);
-      //version = dirMgr.getVersion();
-      zvt = new DefaultZoieVersion();
-      //zvt.setVersionDesp(dirMgr.getVersion().encodeToString());
-
-      //TODO: hao: need to parse version
-      //assertEquals("index version mismatch after second flush", TestData.testdata.length + TestData.testdata2.length - 1, version);
+       
+      zvt = (DefaultZoieVersion)dirMgr.getVersion();
+      assertEquals("index version mismatch after second flush", TestData.testdata.length + TestData.testdata2.length - 1, zvt.getVersionId());
 
       assertEquals("should have no hits", 0, countHits(idxSystem, q));
 
@@ -1108,14 +1099,11 @@ public class ZoieTest extends ZoieTestCase
       exportFile.close();
 
       assertEquals("count is wrong", hits, countHits(idxSystem, q));
-
+     
+            
+      zvt = (DefaultZoieVersion)dirMgr.getVersion();
       
-      zvt = new DefaultZoieVersion();
-      //zvt.setVersionDesp(dirMgr.getVersion().encodeToString());
-      
-      //version = dirMgr.getVersion();
-      //TODO: hao: need to parse version
-      //assertEquals("imported version is wrong", versionExported, version);
+      assertEquals("imported version is wrong", versionExported.getVersionId(), zvt.getVersionId());
     }
     catch(ZoieException e)
     {
