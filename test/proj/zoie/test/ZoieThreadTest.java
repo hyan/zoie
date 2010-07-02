@@ -200,7 +200,7 @@ public class ZoieThreadTest extends ZoieTestCase
       {
         //list.add(new DataEvent<String>(i, TestData.testdata[i]));
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
       }
@@ -223,7 +223,7 @@ public class ZoieThreadTest extends ZoieTestCase
           
           zvt = new DefaultZoieVersion();
           long version = n * count + i;
-          zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
+          //zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
           zvt.setVersionId(version);
           
           list = new ArrayList<DataEvent<String,DefaultZoieVersion>>(1);

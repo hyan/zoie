@@ -700,7 +700,7 @@ public class ZoieTest extends ZoieTestCase
       {
         //version = i;
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
         //list.add(new DataEvent<String>(i, TestData.testdata[i]));
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
