@@ -112,11 +112,11 @@ public class ZoieTest extends ZoieTestCase
     List<DataEvent<String, DefaultZoieVersion>> list=new ArrayList<DataEvent<String,DefaultZoieVersion>>(2);
     DefaultZoieVersion zvt1 = new DefaultZoieVersion();
     zvt1.setVersionId(0);
-    zvt1.setVersionDesp("This is hao's test version 0");
+    //zvt1.setVersionDesp("This is hao's test version 0");
     
     DefaultZoieVersion zvt2 = new DefaultZoieVersion();
     zvt2.setVersionId(1);
-    zvt2.setVersionDesp("This is hao's test version 1");
+    //zvt2.setVersionDesp("This is hao's test version 1");
     
     list.add(new DataEvent<String,DefaultZoieVersion>("hao,yan 0", zvt1));
     list.add(new DataEvent<String,DefaultZoieVersion>("hao,yan 1", zvt2));
@@ -232,7 +232,7 @@ public class ZoieTest extends ZoieTestCase
 	    DefaultZoieVersion zvt = null;
 	    for (int i=0;i<count;++i){
 	      zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
 	      list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i], zvt));
 	    }
@@ -299,7 +299,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i=0;i<count;++i)
       {
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
         
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i], zvt));
@@ -380,7 +380,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i=0;i<count;++i)
       {
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
         //list.add(new DataEvent<Integer,DefaultZoieVersion>(i,i));
         list.add(new DataEvent<Integer,DefaultZoieVersion>(i,zvt));
@@ -438,7 +438,7 @@ public class ZoieTest extends ZoieTestCase
           {
             //System.out.println("ZoieTest.java:testAsyncDataConsumer():delay:" + delay + ", batchSize:" + batchSize + ",forloop: i: " + i);
             zvt = new DefaultZoieVersion();
-            zvt.setVersionDesp("desp"+i);
+            //zvt.setVersionDesp("desp"+i);
             zvt.setVersionId(i);
             list.add(new DataEvent<Integer,DefaultZoieVersion>(i,zvt));
           }
@@ -623,7 +623,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i = 0; i < count; i++)
       {
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
         //list.add(new DataEvent<String,DefaultZoieVersion>(i, TestData.testdata[i]));
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i], zvt));
@@ -639,7 +639,7 @@ public class ZoieTest extends ZoieTestCase
         {
           zvt = new DefaultZoieVersion();
           long version = n * count + i;
-          zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
+          //zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
           zvt.setVersionId(version);
           list = new ArrayList<DataEvent<String,DefaultZoieVersion>>(1);
           list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i], zvt));
@@ -744,7 +744,7 @@ public class ZoieTest extends ZoieTestCase
       {
         version = count + i;
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]+"version"+version);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]+"version"+version);
         zvt.setVersionId(version);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata2[i],zvt));
       }
@@ -801,7 +801,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i=0;i<count/2;++i)
       {
         DefaultZoieVersion zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp(TestData.testdata[i]);
+        //zvt.setVersionDesp(TestData.testdata[i]);
         zvt.setVersionId(i);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i], zvt));
       }
@@ -816,7 +816,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i=count/2; i < count; ++i)
       {
         DefaultZoieVersion zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]);
         zvt.setVersionId(i);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
       }
@@ -855,7 +855,7 @@ public class ZoieTest extends ZoieTestCase
     DefaultZoieVersion zvt = null;
     for (int i = 0; i < count; i++){
       zvt = new DefaultZoieVersion();
-      zvt.setVersionDesp("desp"+TestData.testdata[i]);
+      //zvt.setVersionDesp("desp"+TestData.testdata[i]);
       zvt.setVersionId(i);
       //version = i;
       list.add(new DataEvent<String, DefaultZoieVersion>(TestData.testdata[i], zvt));
@@ -899,7 +899,7 @@ public class ZoieTest extends ZoieTestCase
       {
         version = i + rep*count;
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+version);
         zvt.setVersionId(version);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
       }
@@ -1053,7 +1053,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i=0;i<TestData.testdata.length;++i)
       {
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+i);
+        //zvt.setVersionDesp("desp"+TestData.testdata[i]+"version:"+i);
         zvt.setVersionId(i);
         list.add(new DataEvent<String,DefaultZoieVersion>(TestData.testdata[i],zvt));
       }
@@ -1086,7 +1086,7 @@ public class ZoieTest extends ZoieTestCase
       for (int i=0; i < TestData.testdata2.length; ++i)
       {
         zvt = new DefaultZoieVersion();
-        zvt.setVersionDesp("desp"+TestData.testdata.length+TestData.testdata2[i]);
+        //zvt.setVersionDesp("desp"+TestData.testdata.length+TestData.testdata2[i]);
         zvt.setVersionId(TestData.testdata.length+i);
         
         list.add(new DataEvent<String, DefaultZoieVersion>(TestData.testdata.length + TestData.testdata2[i],zvt));
@@ -1095,7 +1095,7 @@ public class ZoieTest extends ZoieTestCase
       idxSystem.flushEvents(100000);
       //version = dirMgr.getVersion();
       zvt = new DefaultZoieVersion();
-      zvt.setVersionDesp(dirMgr.getVersion().encodeToString());
+      //zvt.setVersionDesp(dirMgr.getVersion().encodeToString());
 
       //TODO: hao: need to parse version
       //assertEquals("index version mismatch after second flush", TestData.testdata.length + TestData.testdata2.length - 1, version);
@@ -1111,7 +1111,7 @@ public class ZoieTest extends ZoieTestCase
 
       
       zvt = new DefaultZoieVersion();
-      zvt.setVersionDesp(dirMgr.getVersion().encodeToString());
+      //zvt.setVersionDesp(dirMgr.getVersion().encodeToString());
       
       //version = dirMgr.getVersion();
       //TODO: hao: need to parse version

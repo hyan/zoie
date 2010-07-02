@@ -2,26 +2,28 @@ package proj.zoie.api;
 
 public class DefaultZoieVersion extends ZoieVersion
 {
-  private String _versionDesp; 
   private long _versionId;
  
-//hao: format is "_versionDesp + VID:_versionId";
+  public String toString()
+  {    
+    return String.valueOf(_versionId);
+  }
+  
   public String encodeToString()
   {
-    return _versionDesp + ";ZOIEVID:" + _versionId;
+    return toString();
   }
-  public void setVersionDesp(String str)
-  {
-    _versionDesp = str;
-  }
+  
   public void setVersionId(long id)
   {
     _versionId = id;
   }
+  
   public long getVersionId()
   {
     return _versionId;
   }
+  
   public int compareTo(ZoieVersion o)
   {
     if (this == o) return 0;
@@ -33,11 +35,7 @@ public class DefaultZoieVersion extends ZoieVersion
       return 1;
     else
     {
-      return this.encodeToString().compareToIgnoreCase(oo.encodeToString());
+      return 0;
     }    
-  } 
-  public String toString()
-  {
-    return this.encodeToString();
-  }
+  }   
 }
