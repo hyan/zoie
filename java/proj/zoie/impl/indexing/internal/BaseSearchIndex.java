@@ -116,9 +116,22 @@ public abstract class BaseSearchIndex<R extends IndexReader, V extends ZoieVersi
 	      if (idxMod!=null)
 	      {
 	        idxMod.commit();
-	        //Map<String, String> testCommitMap = new HashMap<String, String>();
-	        //testCommitMap.put("ZoieVersion ", getVersion().toString());
-	        //idxMod.commit(testCommitMap);
+	        
+//	        Map<String, String> testCommitMap = new HashMap<String, String>();
+//	        ZoieVersion zv = getVersion();
+//	        if(zv != null)
+//	        {
+//	          testCommitMap.put("ZoieVersion ",zv.toString());
+//	          idxMod.commit(testCommitMap);
+//	          System.out.println("RAM update: commit" + testCommitMap);	            
+//	        }
+//	        else
+//	        {
+//	          testCommitMap.put("ZoieVersion ","null");
+//            idxMod.commit(testCommitMap);
+//            System.out.println("RAM update: commit" + testCommitMap); 
+//	        }
+	        
 	        //System.out.println(testCommitMap);
 	      }
 	    }
@@ -214,15 +227,18 @@ public abstract class BaseSearchIndex<R extends IndexReader, V extends ZoieVersi
 	  
 	  public void loadFromIndex(BaseSearchIndex<R,V> index) throws IOException
 	  {
+	    // hao: open readOnly ram index reader
 	    ZoieIndexReader<R> reader = index.openIndexReader();
 	    if(reader == null) return;
 	    
 	    Directory dir = reader.directory();
 	    
+	    // hao: delete docs in disk index
       LongSet delDocs = _delDocs;
       clearDeletes();
       deleteDocs(delDocs);
 	    
+      // hao: merge the readOnly ram index with the disk index
 	    IndexWriter writer = null;
 	    try
 	    {
@@ -230,10 +246,30 @@ public abstract class BaseSearchIndex<R extends IndexReader, V extends ZoieVersi
 	      writer.addIndexesNoOptimize(new Directory[] { dir });
 	    }
 	    finally
-	    {
+	    {	      
+//	       V diskVersion = getVersion();
+//	       V ramVersion = index.getVersion();
+//	       V newDiskVersion = diskVersion == null ? ramVersion : (diskVersion.compareTo(ramVersion) < 0 ? ramVersion : diskVersion);
+//	       Map<String, String> commitVersionMap = new HashMap<String, String>();
+//        commitVersionMap.put("DiskZoieVersion ", newDiskVersion.toString());
+//	      writer.commit(commitVersionMap);
+//        System.out.println("commit disk user data" + commitVersionMap);  
+      
 	      closeIndexWriter();
 	    }
 	  }
+	  
+	  
+	  public Map<String, String> getCommitData() throws IOException
+    {
+      ZoieIndexReader zir = openIndexReader();
+      if(zir == null) 
+      {
+        System.out.println("getCommitData(): zir is null");
+        return null;
+      }
+      return IndexReader.getCommitUserData(zir.directory()); 
+    }
 	      
 	  abstract public IndexWriter openIndexWriter(Analyzer analyzer,Similarity similarity) throws IOException;
 	  
