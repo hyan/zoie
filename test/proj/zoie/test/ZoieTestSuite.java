@@ -15,7 +15,7 @@ public class ZoieTestSuite extends TestSuite {
       "testIndexWithAnalyzer", "testUpdates", "testIndexSignature", "testDocIDMapper",
       "testUIDDocIdSet", "testExportImport","testDocIDMapperFactory", "testInRangeDocIDMapperFactory",
       "testThreadDelImpl"});
-  //public static List<String> allTests = Arrays.asList(new String[]{"testZoieVersion"});
+  //public static List<String> allTests = Arrays.asList(new String[]{"testRealtime"});
   //public static List<String> allTests = Arrays.asList(new String[]{"testIndexWithAnalyzer"});
   public static List<Class> allClasses = Arrays.asList(new Class[]{ZoieTest.class, ZoieThreadTest.class});
   

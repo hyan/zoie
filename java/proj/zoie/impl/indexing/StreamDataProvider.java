@@ -297,7 +297,7 @@ public abstract class StreamDataProvider<D,V extends ZoieVersion> implements Dat
 		          if (_batch.size()>=_dataProvider._batchSize)
 		          {
 		            flush();
-                    _currentVersion = version;
+                _currentVersion = version;
 		            this.notifyAll();
 		          }
 		        }
@@ -333,9 +333,9 @@ public abstract class StreamDataProvider<D,V extends ZoieVersion> implements Dat
 		  return _throttle;
 		}
 		
-        private void setMaxEventsPerMinute(long maxEventsPerMinute)
-        {
-          _throttle = maxEventsPerMinute;
-        }
+    private void setMaxEventsPerMinute(long maxEventsPerMinute)
+    {
+      _throttle = maxEventsPerMinute;
+    }
 	}
 }
