@@ -6,6 +6,7 @@ import org.apache.lucene.search.DefaultSimilarity;
 import org.apache.lucene.search.Similarity;
 import org.apache.lucene.util.Version;
 
+import proj.zoie.api.ZoieVersion;
 import proj.zoie.api.DocIDMapperFactory;
 import proj.zoie.api.impl.DefaultDocIDMapperFactory;
 import proj.zoie.api.ZoieVersionFactory;
@@ -13,7 +14,7 @@ import proj.zoie.api.impl.DefaultZoieVersionFactory;
 /**
  * Configuration parameters for building a ZoieSystem.
  */
-public class ZoieConfig
+public class ZoieConfig<V extends ZoieVersion>
 {
   /**
    * Default real-time setting: true
@@ -36,7 +37,8 @@ public class ZoieConfig
   public static final int DEFAULT_MAX_BATCH_SIZE = 10000;
 
   DocIDMapperFactory docidMapperFactory = null;
-  ZoieVersionFactory zoieVersionFactory = null;
+ 
+  ZoieVersionFactory<V> zoieVersionFactory = null;
   Analyzer analyzer = null;
   Similarity similarity = null;
   int batchSize;
@@ -48,12 +50,13 @@ public class ZoieConfig
    * Default constructor. Set the size of batch and batch delay to default value
    * 10000 events and 5 minutes respectively. Indexing mode default to realtime.
    */
-  public ZoieConfig()
+  public ZoieConfig(ZoieVersionFactory<V> zoieVersionFactory)
   {
     this.batchSize = DEFAULT_SETTING_BATCHSIZE;
     this.batchDelay = DEFAULT_SETTING_BATCHDELAY;
     this.rtIndexing = true;
     this.maxBatchSize = DEFAULT_MAX_BATCH_SIZE;
+    this.zoieVersionFactory = zoieVersionFactory;
   }
 
   public DocIDMapperFactory getDocidMapperFactory()
@@ -67,9 +70,9 @@ public class ZoieConfig
     this.docidMapperFactory = docidMapperFactory;
   }
   
-  public ZoieVersionFactory getZoieVersionFactory()
+  public  ZoieVersionFactory<V> getZoieVersionFactory()
   {
-    return zoieVersionFactory == null ? new DefaultZoieVersionFactory() : zoieVersionFactory;
+    return zoieVersionFactory;
   }
 
   public void setZoieVersionFactory(ZoieVersionFactory zoieVersionFactory)

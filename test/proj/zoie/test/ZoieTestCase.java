@@ -46,7 +46,7 @@ public class ZoieTestCase extends TestCase
   @Override
   public void tearDown()
   {
-    //deleteDirectory(getIdxDir());
+    deleteDirectory(getIdxDir());
   }
   protected static File getIdxDir()
   {
@@ -82,14 +82,14 @@ public class ZoieTestCase extends TestCase
     return new File(System.getProperty("java.io.tmpdir"));
   }
 
-  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime)
+  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir, boolean realtime, ZoieVersionFactory<DefaultZoieVersion> zoieVersionFactory)
   {
-    return createZoie(idxDir, realtime, 20);
+    return createZoie(idxDir, realtime, 20, zoieVersionFactory);
   }
   
-  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime, long delay)
+  protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime, long delay, ZoieVersionFactory<DefaultZoieVersion> zoieVersionFactory)
   {
-    return createZoie(idxDir,realtime,delay,null,null,null);
+    return createZoie(idxDir,realtime,delay,null,null, zoieVersionFactory);
   }
 
   protected static ZoieSystem<IndexReader,String, DefaultZoieVersion> createZoie(File idxDir,boolean realtime,DocIDMapperFactory docidMapperFactory,ZoieVersionFactory<DefaultZoieVersion> zoieVersionFactory)

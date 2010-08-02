@@ -64,14 +64,14 @@ public class IndexSignature <V extends ZoieVersion>{
       writer.flush();
     }
     
-    public static IndexSignature<ZoieVersion> read(InputStream in, ZoieVersionFactory<ZoieVersion> zoieVersionFactory) throws IOException
+    public static <V extends ZoieVersion> IndexSignature<V> read(InputStream in, ZoieVersionFactory<V> zoieVersionFactory) throws IOException
     {
       BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
       String line = reader.readLine();
       //System.out.println("IndexSignature:read: read the line: " + line);
       if (line != null)
       {
-        ZoieVersion version = null;
+        V version = null;
         try
         {
           //System.out.println("IndexSignature: zoieVersionFactory: before using getZoieVersion" + zoieVersionFactory + " and line is: " + line);
@@ -85,7 +85,7 @@ public class IndexSignature <V extends ZoieVersion>{
             version = null;
         }
         
-        return new IndexSignature<ZoieVersion>(version);
+        return new IndexSignature<V>(version);
       }
       else
       {

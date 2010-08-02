@@ -92,9 +92,10 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
                             IndexReaderDecorator<R> indexReaderDecorator,
                             Analyzer analyzer,
                             Similarity similarity,
+                            ZoieVersionFactory<V> zoieVersionFactory,
                             int batchSize,long batchDelay,boolean rtIndexing)
   {
-    this(new DefaultDirectoryManager<V>(idxDir), interpreter, indexReaderDecorator, analyzer, similarity, batchSize, batchDelay, rtIndexing);
+    this(new DefaultDirectoryManager<V>(idxDir, zoieVersionFactory), interpreter, indexReaderDecorator, analyzer, similarity,zoieVersionFactory,  batchSize, batchDelay, rtIndexing);
   }
   
   
@@ -108,7 +109,7 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
     public ZoieSystem(DirectoryManager<V> dirMgr,
                              ZoieIndexableInterpreter<D> interpreter,
                              IndexReaderDecorator<R> indexReaderDecorator,
-                             ZoieConfig zoieConfig){
+                             ZoieConfig<V> zoieConfig){
     	this(dirMgr, interpreter, indexReaderDecorator, zoieConfig.getDocidMapperFactory(), zoieConfig.getZoieVersionFactory(), zoieConfig.getAnalyzer(),
     	     zoieConfig.getSimilarity(), zoieConfig.getBatchSize(), zoieConfig.getBatchDelay(), zoieConfig.isRtIndexing(), zoieConfig.getMaxBatchSize());
     }
@@ -123,8 +124,8 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
     public ZoieSystem(File idxDir,
                              ZoieIndexableInterpreter<D> interpreter,
                              IndexReaderDecorator<R> indexReaderDecorator,
-                             ZoieConfig zoieConfig){
-    	this(new DefaultDirectoryManager<V>(idxDir),interpreter,indexReaderDecorator,zoieConfig.getDocidMapperFactory(),zoieConfig.getZoieVersionFactory(),zoieConfig.getAnalyzer(),
+                             ZoieConfig<V> zoieConfig){
+    	this(new DefaultDirectoryManager<V>(idxDir, zoieConfig.getZoieVersionFactory()),interpreter,indexReaderDecorator,zoieConfig.getDocidMapperFactory(),zoieConfig.getZoieVersionFactory(),zoieConfig.getAnalyzer(),
     	     zoieConfig.getSimilarity(),zoieConfig.getBatchSize(),zoieConfig.getBatchDelay(),zoieConfig.isRtIndexing(),zoieConfig.getMaxBatchSize());
     }
     
@@ -145,9 +146,10 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
                                 IndexReaderDecorator<R> indexReaderDecorator,
                                 Analyzer analyzer,
                                 Similarity similarity,
+                                ZoieVersionFactory<V> zoieVersionFactory,
                                 int batchSize,long batchDelay,boolean rtIndexing)
       {
-        this(dirMgr, interpreter, indexReaderDecorator, new DefaultDocIDMapperFactory(), (ZoieVersionFactory<V>)(new DefaultZoieVersionFactory()), analyzer, similarity, batchSize, batchDelay, rtIndexing);
+        this(dirMgr, interpreter, indexReaderDecorator, new DefaultDocIDMapperFactory(), zoieVersionFactory, analyzer, similarity, batchSize, batchDelay, rtIndexing);
        // this(dirMgr, interpreter, indexReaderDecorator, analyzer, similarity, batchSize, batchDelay, rtIndexing);
       }
     
@@ -196,7 +198,7 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
                               Similarity similarity,
                               int batchSize,long batchDelay,boolean rtIndexing)
     {
-      this(new DefaultDirectoryManager<V>(idxDir), interpreter, indexReaderDecorator, docIdMapperFactory, zoieVersionFactory, analyzer, similarity, batchSize, batchDelay, rtIndexing);
+      this(new DefaultDirectoryManager<V>(idxDir,zoieVersionFactory), interpreter, indexReaderDecorator, docIdMapperFactory, zoieVersionFactory, analyzer, similarity, batchSize, batchDelay, rtIndexing);
     }
     
     
@@ -230,7 +232,8 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
       if (interpreter==null) throw new IllegalArgumentException("null interpreter.");
 
       docidMapperFactory = docidMapperFactory==null ? new DefaultDocIDMapperFactory() : docidMapperFactory;
-      zoieVersionFactory = zoieVersionFactory==null ? (ZoieVersionFactory<V>)(new DefaultZoieVersionFactory()) : zoieVersionFactory;
+      //zoieVersionFactory = zoieVersionFactory==null ? (ZoieVersionFactory<V>)(new DefaultZoieVersionFactory()) : zoieVersionFactory;
+      //zoieVersionFactory = zoieVersionFactory==null ? (ZoieVersionFactory<V>)(new DefaultZoieVersionFactory()) : zoieVersionFactory;
       //System.out.println("ZoieSystem:zoieVersionFactory: " + zoieVersionFactory);
       _searchIdxMgr=new SearchIndexManager<R,V>(_dirMgr,indexReaderDecorator,docidMapperFactory,zoieVersionFactory);
       _realtimeIndexing=rtIndexing;
@@ -268,13 +271,13 @@ public class ZoieSystem<R extends IndexReader,D, V extends ZoieVersion> extends 
       super.setBatchSize(100); // realtime batch size
     }
 
-    public static <D,V extends ZoieVersion> ZoieSystem<IndexReader,D,V> buildDefaultInstance(File idxDir,ZoieIndexableInterpreter<D> interpreter,int batchSize,long batchDelay,boolean realtime){
-      return buildDefaultInstance(idxDir, interpreter, new StandardAnalyzer(Version.LUCENE_CURRENT), new DefaultSimilarity(), batchSize, batchDelay, realtime);
-    }
+//    public static <D,V extends ZoieVersion> ZoieSystem<IndexReader,D,V> buildDefaultInstance(File idxDir,ZoieIndexableInterpreter<D> interpreter,int batchSize,long batchDelay,boolean realtime){
+//      return buildDefaultInstance(idxDir, interpreter, new StandardAnalyzer(Version.LUCENE_CURRENT), new DefaultSimilarity(), batchSize, batchDelay, realtime);
+//    }
 
-    public static <D,V extends ZoieVersion> ZoieSystem<IndexReader,D,V> buildDefaultInstance(File idxDir,ZoieIndexableInterpreter<D> interpreter,Analyzer analyzer,Similarity similarity,int batchSize,long batchDelay,boolean realtime){
-      return new ZoieSystem<IndexReader,D,V>(idxDir,interpreter,new DefaultIndexReaderDecorator(),analyzer,similarity,batchSize,batchDelay,realtime);
-    }
+//    public static <D,V extends ZoieVersion> ZoieSystem<IndexReader,D,V> buildDefaultInstance(File idxDir,ZoieIndexableInterpreter<D> interpreter,Analyzer analyzer,Similarity similarity,int batchSize,long batchDelay,boolean realtime){
+//      return new ZoieSystem<IndexReader,D,V>(idxDir,interpreter,new DefaultIndexReaderDecorator(),analyzer,similarity,batchSize,batchDelay,realtime);
+//    }
 
     public void addIndexingEventListener(IndexingEventListener lsnr){
       _lsnrList.add(lsnr);

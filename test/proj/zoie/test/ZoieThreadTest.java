@@ -26,6 +26,7 @@ import proj.zoie.api.ZoieExecutors;
 import proj.zoie.api.ZoieIndexReader;
 import proj.zoie.api.DefaultZoieVersion;
 import proj.zoie.api.DataConsumer.DataEvent;
+import proj.zoie.api.impl.DefaultZoieVersionFactory;
 import proj.zoie.impl.indexing.MemoryStreamDataProvider;
 import proj.zoie.impl.indexing.ZoieSystem;
 import proj.zoie.test.data.TestData;
@@ -49,7 +50,8 @@ public class ZoieThreadTest extends ZoieTestCase
   public void testThreadDelImpl() throws ZoieException
   {
     File idxDir = getIdxDir();
-    final ZoieSystem<IndexReader,String, DefaultZoieVersion> idxSystem = createZoie(idxDir,true, 100);
+    DefaultZoieVersionFactory defaultZoieVersionFactory = new DefaultZoieVersionFactory();
+    final ZoieSystem<IndexReader,String, DefaultZoieVersion> idxSystem = createZoie(idxDir,true, 100,defaultZoieVersionFactory);
     idxSystem.start();
     final String query = "zoie";
     int numThreads = 5;

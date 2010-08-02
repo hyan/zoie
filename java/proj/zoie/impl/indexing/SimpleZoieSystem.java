@@ -18,7 +18,7 @@ package proj.zoie.impl.indexing;
 import java.io.File;
 import proj.zoie.api.ZoieVersion;
 import org.apache.lucene.index.IndexReader;
-
+import proj.zoie.api.ZoieVersionFactory;
 import proj.zoie.api.indexing.ZoieIndexableInterpreter;
 
 /**
@@ -33,8 +33,8 @@ public class SimpleZoieSystem<D, V extends ZoieVersion> extends ZoieSystem<Index
 	 * @param batchSize
 	 * @param batchDelay
 	 */
-	public SimpleZoieSystem(File idxDir, ZoieIndexableInterpreter<D> interpreter,int batchSize, long batchDelay) {
-		super(idxDir, interpreter, new DefaultIndexReaderDecorator(), null,null,batchSize, batchDelay, true);
+	public SimpleZoieSystem(File idxDir, ZoieIndexableInterpreter<D> interpreter,int batchSize, long batchDelay, ZoieVersionFactory<V> zoieVersionFactory) {
+		super(idxDir, interpreter, new DefaultIndexReaderDecorator(), null,null,zoieVersionFactory, batchSize, batchDelay,true);
 	}
 
 }
